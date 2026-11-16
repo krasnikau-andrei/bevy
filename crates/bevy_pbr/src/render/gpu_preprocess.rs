@@ -1811,6 +1811,10 @@ pub fn prepare_preprocess_bind_groups(
     pipelines: Res<PreprocessPipelines>,
     mut bin_unpacking_bind_groups: ResMut<BinUnpackingBindGroups>,
 ) {
+    // Clear out old bind groups, since they may refer to stale metadata
+    // (backport of #26095).
+    bin_unpacking_bind_groups.0.clear();
+
     // Grab the `BatchedInstanceBuffers`.
     let BatchedInstanceBuffers {
         current_input_buffer: current_input_buffer_vec,

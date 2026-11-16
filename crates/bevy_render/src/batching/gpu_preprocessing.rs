@@ -2626,6 +2626,13 @@ pub fn write_binned_instance_buffers<BPI, GFBD>(
 /// Clears out the [`BinUnpackingBuffers`] in preparation for a new frame.
 pub fn clear_bin_unpacking_buffers(mut bin_unpacking_buffers: ResMut<BinUnpackingBuffers>) {
     bin_unpacking_buffers.bin_unpacking_metadata.clear();
+
+    // Clear out the jobs for every view, including views that we won't see this
+    // frame, since they refer to the metadata above (backport of #26095).
+    for view_phase_buffers in bin_unpacking_buffers.view_phase_buffers.values_mut() {
+        view_phase_buffers.indexed_unpacking_jobs.clear();
+        view_phase_buffers.non_indexed_unpacking_jobs.clear();
+    }
 }
 
 /// CPU-side metadata needed to drive the bin unpacking compute shader for a
